@@ -3,14 +3,14 @@
   hosts: all
   any_errors_fatal: true
   become: true
-  gather_facts: false
+  gather_facts: true
 
   handlers:
     - name: Restart Bind
       ansible.builtin.command: "docker restart {{ bind_name }}"
 
   tasks:
-    - name: Include static primary zone files
+    - name: Update static primary zone files
       ansible.builtin.copy:
         dest: "{{ bind_zone_dir }}/"
         mode: "0644"
@@ -20,7 +20,7 @@
       when: bind_zone_files | length > 0
       notify: Restart Bind
 
-    - name: Create dynamic primary zone files
+    - name: Update dynamic primary zone files
       ansible.builtin.template:
         dest: "{{ bind_zone_dir }}/db.{{ zone.name }}"
         mode: "0644"
@@ -37,3 +37,11 @@
         zone_primary: "{{ zone.primary | default(zone.nameserver[0]) }}"
         zone_admin: "{{ zone.admin | default('hostmaster.' + zone.name) }}"
       notify: Restart Bind
+
+  vars:
+    bind_data_dir: "{{ hostvars[inventory_hostname].bind_data_dir | default('/opt') }}"
+    bind_name: "{{ hostvars[inventory_hostname].bind_name | default('bind') }}"
+    bind_zone_default_dir: "{{ bind_data_dir + '/' + bind_name + '/zones' }}"
+    bind_zone_dir: "{{ hostvars[inventory_hostname].bind_zone_dir | default(bind_zone_default_dir) }}"
+    bind_zone_files: "{{ hostvars[inventory_hostname].bind_zone_files | default([]) }}"
+    bind_zones: "{{ hostvars[inventory_hostname].bind_zones | default([]) }}"
