@@ -1,6 +1,7 @@
 ---
 authors: ["Julian Easterling <julian@julianscorner.com>"]
 build_ignore:
+  - .devcontainer
   - README.md
   - build.cmd
   - .gitignore
