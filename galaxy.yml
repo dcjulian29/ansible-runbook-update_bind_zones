@@ -21,4 +21,4 @@ repository: https://github.com/dcjulian29/ansible-runbook-update_bind_zones
 tags:
   - update_bind_zones
   - dcjulian29
-version: 0.9.1
+version: 0.9.5
