@@ -1,0 +1,24 @@
+---
+authors: ["Julian Easterling <julian@julianscorner.com>"]
+build_ignore:
+  - README.md
+  - build.cmd
+  - .gitignore
+  - .vscode
+  - .github
+  - .ansible-lint
+  - .gitattributes
+  - .yamllint
+  - .editorconfig
+description: Runbook that will update zones and restart Bind.
+homepage: https://github.com/dcjulian29/ansible-runbook-update_bind_zones
+issues: https://github.com/dcjulian29/ansible-runbook-update_bind_zones/issues
+license: ["Apache-2.0"]
+name: update_bind_zones
+namespace: dcjulian29
+readme: https://github.com/dcjulian29/ansible-runbook-update_bind_zones/blob/main/README.md
+repository: https://github.com/dcjulian29/ansible-runbook-update_bind_zones
+tags:
+  - update_bind_zones
+  - dcjulian29
+version: 0.9.0

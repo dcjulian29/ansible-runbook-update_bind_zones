@@ -1,0 +1,39 @@
+---
+- name: Runbook that will update zones and restart Bind.
+  hosts: all
+  any_errors_fatal: true
+  become: true
+  gather_facts: false
+
+  handlers:
+    - name: Restart Bind
+      ansible.builtin.command: "docker restart {{ bind_name }}"
+
+  tasks:
+    - name: Include static primary zone files
+      ansible.builtin.copy:
+        dest: "{{ bind_zone_dir }}/"
+        mode: "0644"
+        owner: root
+        src: "{{ item }}"
+      loop: "{{ bind_zone_files }}"
+      when: bind_zone_files | length > 0
+      notify: Restart Bind
+
+    - name: Create dynamic primary zone files
+      ansible.builtin.template:
+        dest: "{{ bind_zone_dir }}/db.{{ zone.name }}"
+        mode: "0644"
+        owner: root
+        src: db.zone.j2
+      loop: "{{ bind_zones }}"
+      loop_control:
+        loop_var: zone
+      when:
+        - bind_zones | length > 0
+        - zone.serial is defined
+        - zone.type | default('master') == 'master'
+      vars:
+        zone_primary: "{{ zone.primary | default(zone.nameserver[0]) }}"
+        zone_admin: "{{ zone.admin | default('hostmaster.' + zone.name) }}"
+      notify: Restart Bind
